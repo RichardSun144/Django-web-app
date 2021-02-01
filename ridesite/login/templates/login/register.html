@@ -1,0 +1,12 @@
+{% extends 'login/base.html' %} <!-- inheritance base -->
+
+{% block title %} Create an Account{% endblock %}
+ 
+{% block content %}
+  Create an New Account
+  <form method="POST" class="form-group">
+    {% csrf_token %}
+    {{register_form.as_p}}
+    <button type="submit" class="btn btn-primary">Register</button>
+  </form>  
+{% endblock %}

@@ -1,0 +1,50 @@
+<!--
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+</head>
+<body>
+     <div style="margin: 15% 40%;">
+        <h1>welcome to login</h1>
+       <form action="/login/" method="post">
+            <p>
+                <label for="id_username">username:</label>
+                <input type="text" id="id_username" name="username" placeholder="username" autofocus required />
+            </p>
+          
+            <p>
+                <label for="id_password">password</label>
+                <input type="password" id="id_password" placeholder="password" name="password" required >
+            </p>
+            <input type="submit" value="confirm">
+        </form>
+    </div>
+
+
+
+</body>
+</html>
+-->
+
+{% extends 'login/base.html' %} <!-- inheritance base -->
+
+{% block title %} LOGIN{% endblock %}
+ 
+{% block content %}
+  DiDi login system
+  <form method="POST" class="form-group">
+    {% csrf_token %}
+    {{user_form.as_p}}
+    
+    {% if message %}
+    {{message}}
+    {%endif%}
+    <button type="submit" class="btn btn-primary" name="login">login</button>
+
+  </form> 
+  <form method="GET"> 
+      <button type="submit" class="btn btn-primary" name="register">register</button>
+</form> 
+{% endblock %}

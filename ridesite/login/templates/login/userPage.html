@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>User page</title>
-</head>
-<body>
-<h1>hello user</h1>
-</body>
-</html>
+{% extends 'login/base.html' %}
+{% load static %}
+{% block title %}register{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+    {% block content %} 
+    {% if request.session.is_login %}
+    <h1>Hello,{{ request.session.user_name }}welcome back! this is the user's page</h1>
+    {% else %}
+    <h1>You are not login, please do that</h1>
+    {% endif %}
+
+    {% endblock %}

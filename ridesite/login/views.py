@@ -14,9 +14,11 @@ def index(response):
       return redirect('http://vcm-18235.vm.duke.edu:8000/login')
   return render(response, "login/index.html")
 
+
 def userPage(response):
   return render(response, "login/userPage.html")
     
+
 def register(response):
   if response.method == "POST" and response.POST:
     register_form = RegisterForm(data=response.POST)
@@ -25,7 +27,7 @@ def register(response):
       password = register_form.cleaned_data["password"]
       email = register_form.cleaned_data["email"]
       UserInfo.objects.create(username=username,password=password,email=email)   
-      return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
+      return render(response, "login/index.html")
   else:
     register_form = RegisterForm()
   return render(response, "login/register.html", locals()) 
@@ -33,17 +35,24 @@ def register(response):
 
 
 def login(response):
+  #if response.session.get('is_login',None):
+    #return redirect('/http://vcm-18235.vm.duke.edu:8000/userPage')
+        
   if response.GET:
     return redirect('/register')    
     
   if response.method == "POST" and response.POST:
     user_form = UserForm(data=response.POST)
     if user_form.is_valid():
-      name = user_form.cleaned_data["username"]
+      username = user_form.cleaned_data["username"]
       password = user_form.cleaned_data["password"]
       try:
-        user = UserInfo.objects.get(name=username)
-        if user.username == username:
+        user = UserInfo.objects.get(username=username)
+        if user.password == password:
+        #if user.password == password:
+          response.session['is_login'] = True
+          response.session['user_id'] = user.id
+          response.session['user_name'] = user.username
           return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
         else:
           message = "wrong password"
@@ -59,8 +68,10 @@ def login(response):
 
   
 def logout(response):
-  pass
-  return redirect('/index/')
+  if not response.session.get('is_login', None):
+    return redirect("/http://vcm-18235.vm.duke.edu:8000/userPage")
+  response.session.flush()
+  return redirect('/login')
 
   
 '''  

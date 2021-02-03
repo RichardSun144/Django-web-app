@@ -1,7 +1,7 @@
 {% extends 'login/base.html' %} <!-- inheritance base -->
 
 {% load static %}
-{% block title %}register{% endblock %}
+{% block title %}driverRegister{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
@@ -9,23 +9,18 @@
 
 {% block content %}
   <div style="width:100%;text-align:center">
-<h1>DiDi Register System</h1>
-<h2>Welcome to be a new user!</h2>
-  <h2>Create an New Account</h2>
+<h1>DiDi driver Register System</h1>
+<h2>Welcome to be a new driver!</h2>
+  <h2> Add your Driver information</h2>
   <div style="width:100%;text-align:center">
   <div class="col-md-4 col-md-offset-4">
   <form method="POST" class="form-group">
   
     {% csrf_token %}
-   {{register_form.as_p}} 
+   {{driver_form.as_p}} 
 
-
-    {% if message %}
-    <div class="alert alert-warning">{{ message }}</div>
-    {%endif%}
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary">driverRegister</button>
   </form>  
 
   </div>
 {% endblock %}
-

@@ -1,0 +1,14 @@
+{% extends 'login/base.html' %}
+{% load static %}
+{% block title %}Driver{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+    {% block content %} 
+
+    <h1>Driver</h1>
+  <form method="GET"> 
+      <button type="submit" class="btn btn-primary" name="edit driver profile">edit driver profile</button>
+</form>
+
+    {% endblock %}

@@ -8,5 +8,8 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login, name='login'),
     path('logout/', views.logout, name='logout'),
-    path('userPage/', views.userPage, name='userPage')
+    path('userPage/', views.userPage, name='userPage'),
+    path('Passenger/', views.Passenger, name='Passenger'),
+    path('Driver/', views.Driver, name='Driver'),
+    path('driverRegister/', views.driverRegister, name='driverRegister'),
 ]

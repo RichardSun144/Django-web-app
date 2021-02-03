@@ -5,7 +5,7 @@ from .models import UserInfo
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 # Create your views here.
-    
+'''   
 def index(response):
   if response.GET:
     if 'register' in response.GET:
@@ -13,7 +13,7 @@ def index(response):
     else:
       return redirect('http://vcm-18235.vm.duke.edu:8000/login')
   return render(response, "login/index.html")
-
+'''
 
 def userPage(response):
   return render(response, "login/userPage.html")
@@ -27,7 +27,7 @@ def register(response):
       password = register_form.cleaned_data["password"]
       email = register_form.cleaned_data["email"]
       UserInfo.objects.create(username=username,password=password,email=email)   
-      return render(response, "login/index.html")
+      return redirect('http://vcm-18235.vm.duke.edu:8000/login')
   else:
     register_form = RegisterForm()
   return render(response, "login/register.html", locals()) 
@@ -44,10 +44,10 @@ def login(response):
   if response.method == "POST" and response.POST:
     user_form = UserForm(data=response.POST)
     if user_form.is_valid():
-      username = user_form.cleaned_data["username"]
+      user = user_form.cleaned_data["username"]
       password = user_form.cleaned_data["password"]
       try:
-        user = UserInfo.objects.get(username=username)
+        user = UserInfo.objects.get(username=user)
         if user.password == password:
         #if user.password == password:
           response.session['is_login'] = True

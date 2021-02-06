@@ -27,7 +27,7 @@ def Passenger(response):
     ride_id = response.GET.get('edit_ride')
     to_be_edit_ride = RideInfo.objects.get(id = ride_id)
     ride_form = RideForm()
-    return render(response, "login/editRide.html",{"ride_form.startPoint":to_be_edit_ride.startPoint})
+    return render(response, "login/editRide.html",locals())
     
   ride_list = RideInfo.objects.all()
   return render(response, "login/Passenger.html", locals())

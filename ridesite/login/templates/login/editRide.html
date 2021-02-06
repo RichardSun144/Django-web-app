@@ -18,14 +18,7 @@
   <form method="POST" class="form-group">
 
     {% csrf_token %}
-   <div class="form-group">
-  {{ ride_form.date.label_tag }}
-  {{ ride_form.date}}
-</div>
-<div class="form-group">
-  {{ ride_form.startPoint.label_tag }}
-  {{ ride_form.startPoint }}
-</div> 
+  {{ride_form.as_p}}  
 
     <button type="submit" class="btn btn-primary">save ride</button>
   </form>  

@@ -9,6 +9,7 @@
 
 
     {% block content %} 
+      <div style="width:100%;text-align:center">
 {% if request.session.is_login %}
 
     <h1>Passenger</h1>
@@ -17,11 +18,13 @@
     <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
         <thead>
           <tr>
-            <th>#</th>
-      <th>date</th>
-      <th>start Point</th>
-      <th>end Point</th>
-      <th>time Point</th>
+            <th><div style="width:100%;text-align:center">#</th>
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
       <th></th>
           </tr>
         </thead>
@@ -30,12 +33,14 @@
     <tr>
       <td><strong>{{ride.id}}</strong></td>
       <td>{{ride.date}}</td>
+      <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
-      <td>{{ride.time}}</td>
+      <td>{{ride.memberNumber}}</td>
+      <td>{{ride.specialText}}</td>
       <td>
       <form method="GET"> 
-      <button type="submit" name = "edit_ride" class="btn btn-primary" value = {{ride.id}}>edit:&nbsp&nbsp&nbsp{{ride.id}}</button>
+      <button type="submit" name = "edit_ride" class="btn btn-primary" value = {{ride.id}}>edit&nbsp{{ride.id}}</button>
       </form>
       </td>
     </tr>

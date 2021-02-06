@@ -7,6 +7,32 @@
     {% block content %} 
 {% if request.session.is_login %}
     <h1>Driver</h1>
+       
+    <table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+
+      <th><div style="width:100%;text-align:center">Vehicle Type</th>
+      <th><div style="width:100%;text-align:center">License Number</th>
+      <th><div style="width:100%;text-align:center">Contains Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+
+          </tr>
+        </thead>
+        <tbody>
+    <tr>
+  {% for driver in driver_info %}
+      <td><div style="width:100%;text-align:center">{{driver.vehicleType}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.licenseNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.containNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.specialText}}</td>
+    </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+    
   <form method="GET"> 
       <button type="submit" class="btn btn-primary" name="edit driver profile">edit driver profile</button>
 </form>

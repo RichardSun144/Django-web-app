@@ -20,7 +20,10 @@ def Driver(response):
       return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
     elif response.GET and 'edit driver profile' in response.GET:
       return redirect("/driverRegister")
-    return render(response, "login/Driver.html")
+    driver_name = response.session['user_name']
+    driver = UserInfo.objects.get(username = driver_name)
+    driver_info = driver.driverinfo_set.all()
+    return render(response, "login/Driver.html", locals())
     
 def Passenger(response):
   if response.GET:
@@ -60,8 +63,12 @@ def driverRegister(response):
         driver_info = DriverInfo(owner = user, vehicleType=vehicleType, licenseNumber=licenseNumber, containNumber=containNumber, specialText=specialText)   
       driver_info.save()
       return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
-  else:
-    driver_form = DriverForm()
+      
+  driver_form = DriverForm() 
+  driver_name = response.session['user_name']
+  driver = UserInfo.objects.get(username = driver_name)
+  driver_info_Num = driver.driverinfo_set.count()
+  driver_info = driver.driverinfo_set.all()
   return render(response, "login/driverRegister.html", locals()) 
      
 def userPage(response):

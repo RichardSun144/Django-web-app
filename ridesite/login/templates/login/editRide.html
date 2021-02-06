@@ -12,9 +12,40 @@
   <div style="width:100%;text-align:center">
 <h1>DiDi Start Ride Edit System</h1>
 <h2>Edit ride!</h2>
+</div>
 
-  <div style="width:100%;text-align:center">
-  <div class="col-md-4 col-md-offset-4">
+        <h3>Your original ride Information:</h3>
+  <table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+
+          </tr>
+        </thead>
+        <tbody>
+    <tr>
+
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.date}}</td>
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.time}}</td>
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.startPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.endPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.memberNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{to_be_edit_ride.specialText}}</td>
+
+    </tr>
+        </tbody>
+      </table>
+        <div style="width:100%;text-align:center">
+      <h3>Your upadated ride Information:</h3>
+      </div>
+    <div class="col-md-4 col-md-offset-4">
   <form method="POST" class="form-group">
 
     {% csrf_token %}

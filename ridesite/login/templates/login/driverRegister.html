@@ -10,17 +10,49 @@
 {% block content %}
 {% if request.session.is_login %}
   <div style="width:100%;text-align:center">
-<h1>DiDi driver Register System</h1>
+  <h1>DiDi driver System</h1>
+  {% if driver_info_Num == 0 %}
 <h2>Welcome to be a new driver!</h2>
   <h2> Add your Driver information</h2>
+  {% else %}
+    <h2> Edit your Driver information</h2>
+    <h2> <div style="width:100%;text-align:left">Your original Driver information</h2>
+    
+    <table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+
+      <th><div style="width:100%;text-align:center">Vehicle Type</th>
+      <th><div style="width:100%;text-align:center">License Number</th>
+      <th><div style="width:100%;text-align:center">Contains Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+
+          </tr>
+        </thead>
+        <tbody>
+    <tr>
+  {% for driver in driver_info %}
+      <td><div style="width:100%;text-align:center">{{driver.vehicleType}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.licenseNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.containNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{driver.specialText}}</td>
+        {% endfor %}
+    </tr>
+        </tbody>
+      </table>  
+        <h2> Your updated Driver information</h2>
+  {% endif %} 
+  
   <div style="width:100%;text-align:center">
   <div class="col-md-4 col-md-offset-4">
+
   <form method="POST" class="form-group">
   
     {% csrf_token %}
    {{driver_form.as_p}} 
 
-    <button type="submit" class="btn btn-primary">driverRegister</button>
+    <button type="submit" class="btn btn-primary">Confirm my Driver Info</button>
   </form>  
   </div>
       {% else %}

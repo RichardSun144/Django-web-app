@@ -3,18 +3,46 @@
 {% block title %}Passenger{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+    
 {% endblock %}
 
 
     {% block content %} 
 {% if request.session.is_login %}
-    <h1>Passenger</h1>
-  {% for ride in ride_list %}
-    <p>&nbsp&nbsp&nbsp:{{ride.id}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.date}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.startPoint}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.endPoint}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.time}}
-    <button type="submit" class="btn btn-primary" value = ride.id>edit:&nbsp&nbsp&nbsp{{ride.id}}</button>
-    </p>
 
-  {% endfor %}
+    <h1>Passenger</h1>
+
+<table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+            <th>#</th>
+      <th>date</th>
+      <th>start Point</th>
+      <th>end Point</th>
+      <th>time Point</th>
+      <th></th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for ride in ride_list %}
+    <tr>
+      <td><strong>{{ride.id}}</strong></td>
+      <td>{{ride.date}}</td>
+      <td>{{ride.startPoint}}</td>
+      <td>{{ride.endPoint}}</td>
+      <td>{{ride.time}}</td>
+      <td>
+      <form method="GET"> 
+      <button type="submit" name = "edit_ride" class="btn btn-primary" value = {{ride.id}}>edit:&nbsp&nbsp&nbsp{{ride.id}}</button>
+      </form>
+      </td>
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+
       {% else %}
     <h1>You are not login, please do that</h1>
     {% endif %}

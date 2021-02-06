@@ -23,9 +23,19 @@ def Driver(response):
     return render(response, "login/Driver.html")
     
 def Passenger(response):
+  if response.GET:
+    ride_id = response.GET.get('edit_ride')
+    to_be_edit_ride = RideInfo.objects.get(id = ride_id)
+    ride_form = RideForm()
+    return render(response, "login/editRide.html",{"ride_form.startPoint":to_be_edit_ride.startPoint})
+    
   ride_list = RideInfo.objects.all()
   return render(response, "login/Passenger.html", locals())
-    
+
+def editRide(response):
+  ride_form = RideForm()
+  return render(response, "login/editRide.html", locals()) 
+
 
 def driverRegister(response):
   if response.method == "POST" and response.POST:

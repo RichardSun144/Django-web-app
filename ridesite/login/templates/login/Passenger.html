@@ -4,9 +4,18 @@
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
+
+
     {% block content %} 
-
+{% if request.session.is_login %}
     <h1>Passenger</h1>
+  {% for ride in ride_list %}
+    <p>&nbsp&nbsp&nbsp:{{ride.id}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.date}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.startPoint}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.endPoint}}&nbsp&nbsp&nbsp:&nbsp&nbsp&nbsp{{ride.time}}
+    <button type="submit" class="btn btn-primary" value = ride.id>edit:&nbsp&nbsp&nbsp{{ride.id}}</button>
+    </p>
 
-
+  {% endfor %}
+      {% else %}
+    <h1>You are not login, please do that</h1>
+    {% endif %}
     {% endblock %}

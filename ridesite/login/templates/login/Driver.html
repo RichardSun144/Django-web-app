@@ -5,10 +5,12 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
     {% block content %} 
-
+{% if request.session.is_login %}
     <h1>Driver</h1>
   <form method="GET"> 
       <button type="submit" class="btn btn-primary" name="edit driver profile">edit driver profile</button>
 </form>
-
+      {% else %}
+    <h1>You are not login, please do that</h1>
+    {% endif %}
     {% endblock %}

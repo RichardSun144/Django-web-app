@@ -1,5 +1,5 @@
 from django.db import models
-
+import django.utils.timezone as timezone
 # Create your models here.
 
 class UserInfo(models.Model):
@@ -20,7 +20,16 @@ class DriverInfo(models.Model):
   def __str__(self):
         return self.vehicleType 
  
-  
+class RideInfo(models.Model):
+  owner = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+  date = models.DateField(default = timezone.now)
+  time = models.TimeField(default = timezone.now)
+  startPoint = models.CharField(max_length=32)
+  endPoint = models.CharField(max_length=32)
+  memberNumber = models.IntegerField()
+  specialText = models.TextField(blank=True, default= "")
+  def __str__(self):
+        return self.startPoint + self.endPoint
 '''
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

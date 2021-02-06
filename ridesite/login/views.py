@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, UserForm, DriverForm
-from .models import UserInfo, DriverInfo
+from .forms import RegisterForm, UserForm, DriverForm, RideForm
+from .models import UserInfo, DriverInfo, RideInfo
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 # Create your views here.
@@ -23,7 +23,8 @@ def Driver(response):
     return render(response, "login/Driver.html")
     
 def Passenger(response):
-    return render(response, "login/Passenger.html")
+  ride_list = RideInfo.objects.all()
+  return render(response, "login/Passenger.html", locals())
     
 
 def driverRegister(response):
@@ -87,8 +88,7 @@ def register(response):
 
 def login(response):
   #if response.session.get('is_login',None):
-    #return redirect('/http://vcm-18235.vm.duke.edu:8000/userPage')
-        
+    #return redirect('/http://vcm-18235.vm.duke.edu:8000/userPage')        
   if response.GET:
     return redirect('/register')    
     
@@ -118,7 +118,40 @@ def login(response):
   #return render(response, 'login/loginSuccess.html')
   return render(response, 'login/login.html', locals())
 
-
+def startRide(response):
+  if response.method == "POST" and response.POST:
+    ride_form = RideForm(data=response.POST)
+    if ride_form.is_valid():
+      date = ride_form.cleaned_data["date"]
+      time = ride_form.cleaned_data["time"]
+      startPoint = ride_form.cleaned_data["startPoint"]
+      endPoint = ride_form.cleaned_data["endPoint"]
+      memberNumber = ride_form.cleaned_data["memberNumber"]
+      specialText = ride_form.cleaned_data["specialText"]
+      username = response.session.get('user_name', None)
+      user = UserInfo.objects.get(username = username)
+      '''
+      username = response.session.get('user_name', None)
+      user = UserInfo.objects.get(username = username)
+      user.isDriver = True
+      user.save()
+      
+      try:
+        driver_info = DriverInfo.objects.get(owner = user)
+        driver_info.vehicleType = vehicleType
+        driver_info.licenseNumber = licenseNumber
+        driver_info.containNumber =containNumber
+        driver_info.specialText = specialText
+      except:
+        driver_info = DriverInfo(owner = user, vehicleType=vehicleType, licenseNumber=licenseNumber, containNumber=containNumber, specialText=specialText) 
+      '''
+      ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
+      ride_info.save()
+      return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
+  else:
+    ride_form = RideForm()
+  return render(response, "login/startRide.html", locals()) 
+  
   
 def logout(response):
   if not response.session.get('is_login', None):

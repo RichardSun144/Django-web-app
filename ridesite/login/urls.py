@@ -12,4 +12,5 @@ urlpatterns = [
     path('Passenger/', views.Passenger, name='Passenger'),
     path('Driver/', views.Driver, name='Driver'),
     path('driverRegister/', views.driverRegister, name='driverRegister'),
+    path('startRide/', views.startRide, name='startRide'),
 ]

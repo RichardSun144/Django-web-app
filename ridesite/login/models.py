@@ -28,6 +28,7 @@ class RideInfo(models.Model):
   endPoint = models.CharField(max_length=32)
   memberNumber = models.IntegerField()
   specialText = models.TextField(blank=True, default= "")
+  isConfirmed = models.BooleanField(default=False)
   def __str__(self):
         return self.startPoint + self.endPoint
 '''

@@ -17,7 +17,7 @@
       <th><div style="width:100%;text-align:center">License Number</th>
       <th><div style="width:100%;text-align:center">Contains Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
-
+      <th></th>
           </tr>
         </thead>
         <tbody>
@@ -27,15 +27,52 @@
       <td><div style="width:100%;text-align:center">{{driver.licenseNumber}}</td>
       <td><div style="width:100%;text-align:center">{{driver.containNumber}}</td>
       <td><div style="width:100%;text-align:center">{{driver.specialText}}</td>
+      <td><div style="width:100%;text-align:center">
+        <form method="GET"> 
+      <button type="submit" class="btn btn-primary" name="edit driver profile">edit driver profile</button>
+</form>
+</td>
     </tr>
         {% endfor %}
         </tbody>
       </table>
 
     
-  <form method="GET"> 
-      <button type="submit" class="btn btn-primary" name="edit driver profile">edit driver profile</button>
-</form>
+
+<h1>All open Rides</h1>
+<table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+            <th><div style="width:100%;text-align:center">#</th>
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+      <th></th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for ride in all_open_ride %}
+    <tr>
+      <td><strong><div style="width:100%;text-align:center">{{ride.id}}</strong></td>
+      <td><div style="width:100%;text-align:center">{{ride.date}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.time}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.startPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.endPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.memberNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.specialText}}</td>
+      <td><div style="width:100%;text-align:center">
+      <form method="GET"> 
+      <button type="submit" name = "confirm_ride" class="btn btn-primary" value = {{ride.id}}>confirm&nbsp{{ride.id}}</button>
+</form></td>
+      
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>
       {% else %}
     <h1>You are not login, please do that</h1>
     {% endif %}

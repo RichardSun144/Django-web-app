@@ -16,6 +16,15 @@ def index(response):
 '''
 
 def Driver(response):
+    if response.GET:
+      if 'confirm_ride' in response.GET:
+        ride_id = response.GET.get('confirm_ride')
+        ride_to_confirm = RideInfo.objects.get(id = ride_id)
+        ride_to_confirm.isConfirmed = True
+        #ride_to_confirm.driverrrr = response.session['user_name']
+        ride_to_confirm.save()
+        all_open_ride = RideInfo.objects.filter(isConfirmed = False)
+        return render(response, "login/Driver.html", locals())
     if not response.session.get('is_driver', None):
       return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
     elif response.GET and 'edit driver profile' in response.GET:
@@ -23,20 +32,48 @@ def Driver(response):
     driver_name = response.session['user_name']
     driver = UserInfo.objects.get(username = driver_name)
     driver_info = driver.driverinfo_set.all()
+    all_open_ride = RideInfo.objects.filter(isConfirmed = False)
     return render(response, "login/Driver.html", locals())
     
 def Passenger(response):
   if response.GET:
+    if 'create_ride' in response.GET:
+      return redirect("/startRide")
     ride_id = response.GET.get('edit_ride')
+    response.session['edit_ride_id'] = ride_id
     to_be_edit_ride = RideInfo.objects.get(id = ride_id)
     ride_form = RideForm()
-    return render(response, "login/editRide.html",locals())
-    
-  ride_list = RideInfo.objects.all()
+    #return render(response, "login/editRide.html",locals())
+    return redirect("/editRide")
+  user = UserInfo.objects.get(username = response.session['user_name'])
+  ride_list_open = RideInfo.objects.filter(isConfirmed = False, owner = user)
+  ride_list_confirmed = RideInfo.objects.filter(isConfirmed = True, owner = user)
   return render(response, "login/Passenger.html", locals())
 
 def editRide(response):
+  if response.method == "POST" and response.POST:
+    ride_form = RideForm(data=response.POST)
+    if ride_form.is_valid():
+      date = ride_form.cleaned_data["date"]
+      time = ride_form.cleaned_data["time"]
+      startPoint = ride_form.cleaned_data["startPoint"]
+      endPoint = ride_form.cleaned_data["endPoint"]
+      memberNumber = ride_form.cleaned_data["memberNumber"]
+      specialText = ride_form.cleaned_data["specialText"]
+      edit_ride_id = response.session.get('edit_ride_id', None)
+      ride_info = RideInfo.objects.get(id = edit_ride_id)
+      #ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
+      ride_info.date = date
+      ride_info.time = time
+      ride_info.startPoint = startPoint
+      ride_info.endPoint = endPoint
+      ride_info.memberNumber = memberNumber
+      ride_info.specialText = specialText
+      ride_info.save()
+      return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   ride_form = RideForm()
+  edit_ride_id = response.session.get('edit_ride_id', None)
+  to_be_edit_ride = RideInfo.objects.get(id = edit_ride_id)
   return render(response, "login/editRide.html", locals()) 
 
 
@@ -62,7 +99,7 @@ def driverRegister(response):
       except:
         driver_info = DriverInfo(owner = user, vehicleType=vehicleType, licenseNumber=licenseNumber, containNumber=containNumber, specialText=specialText)   
       driver_info.save()
-      return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
+      return redirect('http://vcm-18235.vm.duke.edu:8000/Driver')
       
   driver_form = DriverForm() 
   driver_name = response.session['user_name']

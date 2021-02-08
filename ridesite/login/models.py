@@ -29,6 +29,7 @@ class RideInfo(models.Model):
   memberNumber = models.IntegerField()
   specialText = models.TextField(blank=True, default= "")
   isConfirmed = models.BooleanField(default=False)
+  isSharable = models.BooleanField(default=False)
   driverWho = models.CharField(max_length=32)
   def __str__(self):
         return self.startPoint + self.endPoint

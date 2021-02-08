@@ -24,12 +24,12 @@ def Driver(response):
         ride_to_confirm.driverWho = response.session['user_name']
         ride_to_confirm.save()
         all_open_ride = RideInfo.objects.filter(isConfirmed = False)
-        return render(response, "login/Driver.html", locals())
+        #return render(response, "login/Driver.html", locals())
       if 'complete_ride' in response.GET:
         ride_id = response.GET.get('complete_ride')
         ride_to_complete = RideInfo.objects.get(id = ride_id)
         ride_to_complete.delete()
-        return render(response, "login/Driver.html", locals())
+        #return render(response, "login/Driver.html", locals())
     if not response.session.get('is_driver', None):
       return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
     elif response.GET and 'edit driver profile' in response.GET:
@@ -66,6 +66,7 @@ def editRide(response):
       endPoint = ride_form.cleaned_data["endPoint"]
       memberNumber = ride_form.cleaned_data["memberNumber"]
       specialText = ride_form.cleaned_data["specialText"]
+      isSharable = ride_form.cleaned_data["isSharable"]
       edit_ride_id = response.session.get('edit_ride_id', None)
       ride_info = RideInfo.objects.get(id = edit_ride_id)
       #ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
@@ -75,6 +76,7 @@ def editRide(response):
       ride_info.endPoint = endPoint
       ride_info.memberNumber = memberNumber
       ride_info.specialText = specialText
+      ride_info.isSharable = isSharable
       ride_info.save()
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   ride_form = RideForm()
@@ -187,6 +189,7 @@ def startRide(response):
       endPoint = ride_form.cleaned_data["endPoint"]
       memberNumber = ride_form.cleaned_data["memberNumber"]
       specialText = ride_form.cleaned_data["specialText"]
+      isSharable = ride_form.cleaned_data["isSharable"]
       username = response.session.get('user_name', None)
       user = UserInfo.objects.get(username = username)
       '''
@@ -204,7 +207,7 @@ def startRide(response):
       except:
         driver_info = DriverInfo(owner = user, vehicleType=vehicleType, licenseNumber=licenseNumber, containNumber=containNumber, specialText=specialText) 
       '''
-      ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
+      ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText, isSharable = isSharable) 
       ride_info.save()
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   else:

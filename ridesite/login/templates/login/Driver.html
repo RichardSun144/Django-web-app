@@ -73,6 +73,49 @@
     {% endfor %}
         </tbody>
       </table>
+      
+      <h1>Rides you have confirmed</h1>
+      <table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+            <th><div style="width:100%;text-align:center">#</th>
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+      <th></th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for ride in all_confirmed_ride %}
+    <tr>
+      <td><strong><div style="width:100%;text-align:center">{{ride.id}}</strong></td>
+      <td><div style="width:100%;text-align:center">{{ride.date}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.time}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.startPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.endPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.memberNumber}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.specialText}}</td>
+      <td><div style="width:100%;text-align:center">
+      <form method="GET"> 
+      <button type="submit" name = "complete_ride" class="btn btn-primary" value = {{ride.id}}>complete&nbsp{{ride.id}}</button>
+</form></td>
+      
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+      
+      
+      
+      
+      
+      
+      
+      
       {% else %}
     <h1>You are not login, please do that</h1>
     {% endif %}

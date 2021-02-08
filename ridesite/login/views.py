@@ -21,9 +21,14 @@ def Driver(response):
         ride_id = response.GET.get('confirm_ride')
         ride_to_confirm = RideInfo.objects.get(id = ride_id)
         ride_to_confirm.isConfirmed = True
-        #ride_to_confirm.driverrrr = response.session['user_name']
+        ride_to_confirm.driverWho = response.session['user_name']
         ride_to_confirm.save()
         all_open_ride = RideInfo.objects.filter(isConfirmed = False)
+        return render(response, "login/Driver.html", locals())
+      if 'complete_ride' in response.GET:
+        ride_id = response.GET.get('complete_ride')
+        ride_to_complete = RideInfo.objects.get(id = ride_id)
+        ride_to_complete.delete()
         return render(response, "login/Driver.html", locals())
     if not response.session.get('is_driver', None):
       return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
@@ -33,6 +38,7 @@ def Driver(response):
     driver = UserInfo.objects.get(username = driver_name)
     driver_info = driver.driverinfo_set.all()
     all_open_ride = RideInfo.objects.filter(isConfirmed = False)
+    all_confirmed_ride = RideInfo.objects.filter(isConfirmed = True, driverWho = response.session['user_name'])
     return render(response, "login/Driver.html", locals())
     
 def Passenger(response):
@@ -134,8 +140,7 @@ def register(response):
       except: 
         UserInfo.objects.create(username=username,password=password,email=email)   
         return redirect('http://vcm-18235.vm.duke.edu:8000/login')
-  else:
-    register_form = RegisterForm()
+  register_form = RegisterForm()
   return render(response, "login/register.html", locals()) 
 
 

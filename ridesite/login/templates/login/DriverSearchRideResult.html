@@ -1,0 +1,58 @@
+{% extends 'login/base.html' %}
+{% load static %}
+{% block title %}Driver Search Ride Result{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+    
+{% endblock %}
+
+
+    {% block content %} 
+      <div style="width:100%;text-align:center">
+{% if request.session.is_login %}
+
+    <h1>Driver Search Result List</h1>
+    <h2>Your Search Result</h2>
+<table class="table table-bordered">
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+            <th><div style="width:100%;text-align:center">#</th>
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+
+
+      <th></th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for ride in driver_ride_search_result %}
+    <tr>
+      <td><strong>{{ride.id}}</strong></td>
+      <td>{{ride.date}}</td>
+      <td>{{ride.time}}</td>
+      <td>{{ride.startPoint}}</td>
+      <td>{{ride.endPoint}}</td>
+      <td>{{ride.memberNumber}}</td>
+      <td>{{ride.specialText}}</td>
+      
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>    
+      
+      <form method="GET"> 
+      <button type="submit" name = "driver_search_back" class="btn btn-primary" value = {{ride.id}}>back</button>
+      </form>
+      
+      
+      
+      {% else %}
+    <h1>You are not login, please do that</h1>
+    {% endif %}
+    {% endblock %}

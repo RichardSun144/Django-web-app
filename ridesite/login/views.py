@@ -7,61 +7,67 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 # Create your views here.
 '''   
-def index(response):
-  if response.GET:
-    if 'register' in response.GET:
+def index(request):
+  if request.GET:
+    if 'register' in request.GET:
       return redirect('http://vcm-18235.vm.duke.edu:8000/register')
     else:
       return redirect('http://vcm-18235.vm.duke.edu:8000/login')
-  return render(response, "login/index.html")
+  return render(request, "login/index.html")
 '''
 
-def Driver(response):
-    if response.GET:
-      if 'confirm_ride' in response.GET:
-        ride_id = response.GET.get('confirm_ride')
+def Driver(request):
+    if request.GET:
+      if 'driver_to_search_ride' in request.GET:
+        return redirect("/driverSearchRide")
+      if 'confirm_ride' in request.GET:
+        ride_id = request.GET.get('confirm_ride')
         ride_to_confirm = RideInfo.objects.get(id = ride_id)
         ride_to_confirm.isConfirmed = True
-        ride_to_confirm.driverWho = response.session['user_name']
+        ride_to_confirm.driverWho = request.session['user_name']
         ride_to_confirm.save()
         all_open_ride = RideInfo.objects.filter(isConfirmed = False)
-        #return render(response, "login/Driver.html", locals())
-      if 'complete_ride' in response.GET:
-        ride_id = response.GET.get('complete_ride')
+        #return render(request, "login/Driver.html", locals())
+      if 'complete_ride' in request.GET:
+        ride_id = request.GET.get('complete_ride')
         ride_to_complete = RideInfo.objects.get(id = ride_id)
         ride_to_complete.delete()
-        #return render(response, "login/Driver.html", locals())
-    if not response.session.get('is_driver', None):
+        #return render(request, "login/Driver.html", locals())
+    if not request.session.get('is_driver', None):
       return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
-    elif response.GET and 'edit driver profile' in response.GET:
+    elif request.GET and 'edit driver profile' in request.GET:
       return redirect("/driverRegister")
-    driver_name = response.session['user_name']
+    driver_name = request.session['user_name']
     driver = UserInfo.objects.get(username = driver_name)
     driver_info = driver.driverinfo_set.all()
-    all_open_ride = RideInfo.objects.filter(isConfirmed = False)
-    all_confirmed_ride = RideInfo.objects.filter(isConfirmed = True, driverWho = response.session['user_name'])
-    return render(response, "login/Driver.html", locals())
+    driver_info_obj = DriverInfo.objects.get(owner = driver)
+    dirver_info_capacity = driver_info_obj.containNumber
+    all_open_ride = RideInfo.objects.filter(isConfirmed = False, memberNumber__lte = dirver_info_capacity)
+    all_confirmed_ride = RideInfo.objects.filter(isConfirmed = True, driverWho = request.session['user_name'])
+    return render(request, "login/Driver.html", locals())
     
-def Passenger(response):
-  if response.GET:
-    if 'create_ride' in response.GET:
+def Passenger(request):
+  if request.GET:
+    if 'create_ride' in request.GET:
       return redirect("/startRide")
-    ride_id = response.GET.get('edit_ride')
-    response.session['edit_ride_id'] = ride_id
+    if 'pas_to_search_ride' in request.GET:
+      return redirect("/pasSearchRide")
+    ride_id = request.GET.get('edit_ride')
+    request.session['edit_ride_id'] = ride_id
     to_be_edit_ride = RideInfo.objects.get(id = ride_id)
     ride_form = RideForm()
-    #return render(response, "login/editRide.html",locals())
+    #return render(request, "login/editRide.html",locals())
     return redirect("/editRide")
-  user = UserInfo.objects.get(username = response.session['user_name'])
+  user = UserInfo.objects.get(username = request.session['user_name'])
   ride_list_open = RideInfo.objects.filter(isConfirmed = False, owner = user)
   ride_list_confirmed = RideInfo.objects.filter(isConfirmed = True, owner = user)
   ride_list_other_share = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, isSharable = True)
   
-  return render(response, "login/Passenger.html", locals())
+  return render(request, "login/Passenger.html", locals())
 
-def editRide(response):
-  if response.method == "POST" and response.POST:
-    ride_form = RideForm(data=response.POST)
+def editRide(request):
+  if request.method == "POST" and request.POST:
+    ride_form = RideForm(data=request.POST)
     if ride_form.is_valid():
       date = ride_form.cleaned_data["date"]
       time = ride_form.cleaned_data["time"]
@@ -70,7 +76,7 @@ def editRide(response):
       memberNumber = ride_form.cleaned_data["memberNumber"]
       specialText = ride_form.cleaned_data["specialText"]
       isSharable = ride_form.cleaned_data["isSharable"]
-      edit_ride_id = response.session.get('edit_ride_id', None)
+      edit_ride_id = request.session.get('edit_ride_id', None)
       ride_info = RideInfo.objects.get(id = edit_ride_id)
       #ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
       ride_info.date = date
@@ -83,9 +89,9 @@ def editRide(response):
       ride_info.save()
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   ride_form = RideForm()
-  edit_ride_id = response.session.get('edit_ride_id', None)
+  edit_ride_id = request.session.get('edit_ride_id', None)
   to_be_edit_ride = RideInfo.objects.get(id = edit_ride_id)
-  return render(response, "login/editRide.html", locals()) 
+  return render(request, "login/editRide.html", locals()) 
 '''
 def search_ride(user, dst, num, sdate, stime, edate, etime):
     querySet = Ride.objects.exclude(owner=user).exclude(driver_id=user.id)
@@ -98,9 +104,12 @@ def search_ride(user, dst, num, sdate, stime, edate, etime):
     return ride
 '''
 
-def pasSearchRide(response):
-  if response.method == "POST" and response.POST:
-    PasSearchRide_form = SearchForm(data=response.POST)
+def pasSearchRide(request):
+  if request.GET:
+    if 'pas_search_back' in request.GET:
+      return render(request, "login/Passenger.html")
+  if request.method == "POST" and request.POST:
+    PasSearchRide_form = SearchForm(data=request.POST)
     if PasSearchRide_form.is_valid():
       start_date = PasSearchRide_form.cleaned_data["start_date"]
       end_date = PasSearchRide_form.cleaned_data["end_date"]
@@ -108,28 +117,49 @@ def pasSearchRide(response):
       end_time = PasSearchRide_form.cleaned_data["end_time"]
       endPoint = PasSearchRide_form.cleaned_data["endPoint"]
       memberNumber = PasSearchRide_form.cleaned_data["memberNumber"]
-      user = UserInfo.objects.get(username = response.session['user_name'])
+      user = UserInfo.objects.get(username = request.session['user_name'])
       pas_ride_search_result = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, date__gte=start_date, date__lte=end_date, isSharable = True, memberNumber = memberNumber)
       pas_ride_search_result = pas_ride_search_result.exclude(Q(date=start_date) & Q(time__lte=start_time))
       pas_ride_search_result = pas_ride_search_result.exclude(Q(date=end_date) & Q(time__gte=end_time))    
-      return render(response, "login/PasSearchRideResult.html", locals())
+      return render(request, "login/PasSearchRideResult.html", locals())
   PasSearchRide_form = SearchForm()
-  return render(response, "login/PasSearchRide.html", locals()) 
+  return render(request, "login/PasSearchRide.html", locals()) 
 
 
-def driverRegister(response):
-  if response.method == "POST" and response.POST:
-    driver_form = DriverForm(data=response.POST)
+def driverSearchRide(request):
+  if request.GET:
+    if 'driver_search_back' in request.GET:
+      return render(request, "login/Driver.html")
+  if request.method == "POST" and request.POST:
+    DriverSearchRide_form = SearchForm(data=request.POST)
+    if DriverSearchRide_form.is_valid():
+      start_date = DriverSearchRide_form.cleaned_data["start_date"]
+      end_date = DriverSearchRide_form.cleaned_data["end_date"]
+      start_time = DriverSearchRide_form.cleaned_data["start_time"]
+      end_time = DriverSearchRide_form.cleaned_data["end_time"]
+      endPoint = DriverSearchRide_form.cleaned_data["endPoint"]
+      memberNumber = DriverSearchRide_form.cleaned_data["memberNumber"]
+      user = UserInfo.objects.get(username = request.session['user_name'])
+      driver_ride_search_result = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, date__gte=start_date, date__lte=end_date, memberNumber = memberNumber)
+      driver_ride_search_result = driver_ride_search_result.exclude(Q(date=start_date) & Q(time__lte=start_time))
+      driver_ride_search_result = driver_ride_search_result.exclude(Q(date=end_date) & Q(time__gte=end_time))    
+      return render(request, "login/DriverSearchRideResult.html", locals())
+  DriverSearchRide_form = SearchForm()
+  return render(request, "login/DriverSearchRide.html", locals()) 
+
+def driverRegister(request):
+  if request.method == "POST" and request.POST:
+    driver_form = DriverForm(data=request.POST)
     if driver_form.is_valid():
       vehicleType = driver_form.cleaned_data["vehicleType"]
       licenseNumber = driver_form.cleaned_data["licenseNumber"]
       containNumber = driver_form.cleaned_data["containNumber"]
       specialText = driver_form.cleaned_data["specialText"]
-      username = response.session.get('user_name', None)
+      username = request.session.get('user_name', None)
       user = UserInfo.objects.get(username = username)
       user.isDriver = True
       user.save()
-      response.session['is_driver'] = user.isDriver
+      request.session['is_driver'] = user.isDriver
       try:
         driver_info = DriverInfo.objects.get(owner = user)
         driver_info.vehicleType = vehicleType
@@ -142,27 +172,27 @@ def driverRegister(response):
       return redirect('http://vcm-18235.vm.duke.edu:8000/Driver')
       
   driver_form = DriverForm() 
-  driver_name = response.session['user_name']
+  driver_name = request.session['user_name']
   driver = UserInfo.objects.get(username = driver_name)
   driver_info_Num = driver.driverinfo_set.count()
   driver_info = driver.driverinfo_set.all()
-  return render(response, "login/driverRegister.html", locals()) 
+  return render(request, "login/driverRegister.html", locals()) 
      
-def userPage(response):
-  if response.GET:
-    if 'Passenger' in response.GET:
+def userPage(request):
+  if request.GET:
+    if 'Passenger' in request.GET:
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
     else:
-      if response.session.get('is_driver', None):
+      if request.session.get('is_driver', None):
         return redirect('http://vcm-18235.vm.duke.edu:8000/Driver') 
       else:
         return redirect('http://vcm-18235.vm.duke.edu:8000/driverRegister') 
-  return render(response, "login/userPage.html")
+  return render(request, "login/userPage.html")
     
 
-def register(response):
-  if response.method == "POST" and response.POST:
-    register_form = RegisterForm(data=response.POST)
+def register(request):
+  if request.method == "POST" and request.POST:
+    register_form = RegisterForm(data=request.POST)
     if register_form.is_valid():
       username = register_form.cleaned_data["username"]
       password = register_form.cleaned_data["password"]
@@ -170,23 +200,23 @@ def register(response):
       try:
         UserInfo.objects.get(username=username)
         message = "User name already exists"
-        return render(response, "login/register.html", locals())
+        return render(request, "login/register.html", locals())
       except: 
         UserInfo.objects.create(username=username,password=password,email=email)   
         return redirect('http://vcm-18235.vm.duke.edu:8000/login')
   register_form = RegisterForm()
-  return render(response, "login/register.html", locals()) 
+  return render(request, "login/register.html", locals()) 
 
 
 
-def login(response):
-  #if response.session.get('is_login',None):
+def login(request):
+  #if request.session.get('is_login',None):
     #return redirect('/http://vcm-18235.vm.duke.edu:8000/userPage')        
-  if response.GET:
+  if request.GET:
     return redirect('/register')    
     
-  if response.method == "POST" and response.POST:
-    user_form = UserForm(data=response.POST)
+  if request.method == "POST" and request.POST:
+    user_form = UserForm(data=request.POST)
     if user_form.is_valid():
       user = user_form.cleaned_data["username"]
       password = user_form.cleaned_data["password"]
@@ -194,26 +224,26 @@ def login(response):
         user = UserInfo.objects.get(username=user)
         if user.password == password:
         #if user.password == password:
-          response.session['is_login'] = True
-          response.session['user_id'] = user.id
-          response.session['user_name'] = user.username
-          response.session['user_email'] = user.email
-          response.session['is_driver'] = user.isDriver
+          request.session['is_login'] = True
+          request.session['user_id'] = user.id
+          request.session['user_name'] = user.username
+          request.session['user_email'] = user.email
+          request.session['is_driver'] = user.isDriver
           return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
         else:
           message = "wrong password"
       except:
         message = "no user exist"
-    #return render(response, 'login/index.html')
-    return render(response, 'login/login.html', locals())
+    #return render(request, 'login/index.html')
+    return render(request, 'login/login.html', locals())
   else:
     user_form = UserForm()
-  #return render(response, 'login/loginSuccess.html')
-  return render(response, 'login/login.html', locals())
+  #return render(request, 'login/loginSuccess.html')
+  return render(request, 'login/login.html', locals())
 
-def startRide(response):
-  if response.method == "POST" and response.POST:
-    ride_form = RideForm(data=response.POST)
+def startRide(request):
+  if request.method == "POST" and request.POST:
+    ride_form = RideForm(data=request.POST)
     if ride_form.is_valid():
       date = ride_form.cleaned_data["date"]
       time = ride_form.cleaned_data["time"]
@@ -222,10 +252,10 @@ def startRide(response):
       memberNumber = ride_form.cleaned_data["memberNumber"]
       specialText = ride_form.cleaned_data["specialText"]
       isSharable = ride_form.cleaned_data["isSharable"]
-      username = response.session.get('user_name', None)
+      username = request.session.get('user_name', None)
       user = UserInfo.objects.get(username = username)
       '''
-      username = response.session.get('user_name', None)
+      username = request.session.get('user_name', None)
       user = UserInfo.objects.get(username = username)
       user.isDriver = True
       user.save()
@@ -244,23 +274,23 @@ def startRide(response):
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   else:
     ride_form = RideForm()
-  return render(response, "login/startRide.html", locals()) 
+  return render(request, "login/startRide.html", locals()) 
   
   
-def logout(response):
-  if not response.session.get('is_login', None):
+def logout(request):
+  if not request.session.get('is_login', None):
     return redirect("/http://vcm-18235.vm.duke.edu:8000/userPage")
-  response.session.flush()
+  request.session.flush()
   return redirect('/login')
   
 
 
   
 '''  
-def create(response):
+def create(request):
   
-  if response.method == "POST":
-    form = CreateNewList(response.POST)
+  if request.method == "POST":
+    form = CreateNewList(request.POST)
     
     if form.is_valid():
       n = form.cleaned_data["question_text"]
@@ -269,13 +299,13 @@ def create(response):
   else:
     form = CreateNewList()
     
-  return render(response, 'login/create.html', {}) 
+  return render(request, 'login/create.html', {}) 
   '''
   
   
 '''
-  if response.method == "POST":
-    form = UserCreationForm(response.POST)
+  if request.method == "POST":
+    form = UserCreationForm(request.POST)
     if form.is_valid():
       form.save()
       return redirect("/registerTrue")

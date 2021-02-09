@@ -1,0 +1,30 @@
+{% extends 'login/base.html' %} <!-- inheritance base -->
+
+{% load static %}
+{% block title %}Search Ride to pick{% endblock %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+
+{% block content %}
+{% if request.session.is_login %}
+  <div style="width:100%;text-align:center">
+<h1>DiDi Driver Pick Ride System</h1>
+<h2>Welcome to earn money!</h2>
+
+  <div style="width:100%;text-align:center">
+  <div class="col-md-4 col-md-offset-4">
+  <form method="POST" class="form-group">
+
+    {% csrf_token %}
+   {{DriverSearchRide_form.as_p}} 
+
+    <button type="submit" class="btn btn-primary">search ride</button>
+  </form>  
+
+  </div>
+      {% else %}
+    <h1>You are not login, please do that</h1>
+    {% endif %}
+{% endblock %}

@@ -13,8 +13,10 @@
 {% if request.session.is_login %}
 
     <h1>Passenger</h1>
-    <h2>Your Open Ride</h2>
+    <h2>Your Open Ride</h2> 
+    
 <table class="table table-bordered">
+
     <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
         <thead>
           <tr>
@@ -52,6 +54,13 @@
     {% endfor %}
         </tbody>
       </table>
+            
+      <form method="GET"> 
+      <button type="submit" name = "create_ride" class="btn btn-primary" value = {{ride.id}}>create a ride</button>
+      </form>
+   
+      
+      
       
       
 <h2>Your Confirmed Ride</h2>
@@ -120,19 +129,9 @@
     {% endfor %}
         </tbody>
       </table>
-      
-      
-      
-      
-      
-      
-      
-      
-      <form method="GET"> 
-      <button type="submit" name = "create_ride" class="btn btn-primary" value = {{ride.id}}>create a ride</button>
+            <form method="GET"> 
+      <button type="submit" name = "pas_to_search_ride" class="btn btn-primary" >search a ride</button>
       </form>
-      
-      
       
       {% else %}
     <h1>You are not login, please do that</h1>

@@ -26,3 +26,12 @@ class RideForm(forms.Form):
   memberNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))
   specialText = forms.CharField(label = "Special Text", max_length=32, widget=forms.TextInput(attrs={'class': 'form-control'}))
   isSharable = forms.BooleanField() 
+  
+class SearchForm(forms.Form):
+  start_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
+  end_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
+  start_time = forms.TimeField(label = "Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
+  end_time = forms.TimeField(label = "Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
+  endPoint = forms.CharField(label = "End Point", max_length=32, widget=forms.TextInput(attrs={'class': 'form-control'}))
+  memberNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))
+  

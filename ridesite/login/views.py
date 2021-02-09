@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, UserForm, DriverForm, RideForm
+from .forms import RegisterForm, UserForm, DriverForm, RideForm, SearchForm
 from .models import UserInfo, DriverInfo, RideInfo
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
+from django.db.models import Q
 # Create your views here.
 '''   
 def index(response):
@@ -54,6 +55,8 @@ def Passenger(response):
   user = UserInfo.objects.get(username = response.session['user_name'])
   ride_list_open = RideInfo.objects.filter(isConfirmed = False, owner = user)
   ride_list_confirmed = RideInfo.objects.filter(isConfirmed = True, owner = user)
+  ride_list_other_share = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, isSharable = True)
+  
   return render(response, "login/Passenger.html", locals())
 
 def editRide(response):
@@ -83,6 +86,35 @@ def editRide(response):
   edit_ride_id = response.session.get('edit_ride_id', None)
   to_be_edit_ride = RideInfo.objects.get(id = edit_ride_id)
   return render(response, "login/editRide.html", locals()) 
+'''
+def search_ride(user, dst, num, sdate, stime, edate, etime):
+    querySet = Ride.objects.exclude(owner=user).exclude(driver_id=user.id)
+    if dst != "":
+        querySet = querySet.filter(destination=dst)
+    querySet = querySet.filter(date__gte=sdate).filter(date__lte=edate)
+    querySet = querySet.exclude(Q(date=sdate) & Q(time__lte=stime))
+    querySet = querySet.exclude(Q(date=edate) & Q(time__gte=etime))
+    ride = [r for r in querySet.all() if r.get_left_cap() >= num]
+    return ride
+'''
+
+def pasSearchRide(response):
+  if response.method == "POST" and response.POST:
+    PasSearchRide_form = SearchForm(data=response.POST)
+    if PasSearchRide_form.is_valid():
+      start_date = PasSearchRide_form.cleaned_data["start_date"]
+      end_date = PasSearchRide_form.cleaned_data["end_date"]
+      start_time = PasSearchRide_form.cleaned_data["start_time"]
+      end_time = PasSearchRide_form.cleaned_data["end_time"]
+      endPoint = PasSearchRide_form.cleaned_data["endPoint"]
+      memberNumber = PasSearchRide_form.cleaned_data["memberNumber"]
+      user = UserInfo.objects.get(username = response.session['user_name'])
+      pas_ride_search_result = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, date__gte=start_date, date__lte=end_date, isSharable = True, memberNumber = memberNumber)
+      pas_ride_search_result = pas_ride_search_result.exclude(Q(date=start_date) & Q(time__lte=start_time))
+      pas_ride_search_result = pas_ride_search_result.exclude(Q(date=end_date) & Q(time__gte=end_time))    
+      return render(response, "login/PasSearchRideResult.html", locals())
+  PasSearchRide_form = SearchForm()
+  return render(response, "login/PasSearchRide.html", locals()) 
 
 
 def driverRegister(response):

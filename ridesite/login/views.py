@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import RegisterForm, UserForm, DriverForm, RideForm, SearchForm
+from .forms import RegisterForm, UserForm, DriverForm, RideForm, SearchForm, JoinForm
 from .models import UserInfo, DriverInfo, RideInfo
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -52,6 +52,13 @@ def Passenger(request):
       return redirect("/startRide")
     if 'pas_to_search_ride' in request.GET:
       return redirect("/pasSearchRide")
+    if 'join_other_ride' in request.GET:
+      #joiner = UserInfo.objects.get(username = request.session['user_name'])
+      #ride_tobe_joined_id = request.GET.get('join_other_ride')
+      #request.session['join_other_ride_id'] = join_ride_id
+      #ride_tobe_joined = RideInfo.objects.get(id = ride_tobe_joined_id)
+      #ride_tobe_joined.sharer.add(joiner)
+      return render(request, "login/joinRide.html", locals())
     ride_id = request.GET.get('edit_ride')
     request.session['edit_ride_id'] = ride_id
     to_be_edit_ride = RideInfo.objects.get(id = ride_id)
@@ -60,11 +67,33 @@ def Passenger(request):
     return redirect("/editRide")
   user = UserInfo.objects.get(username = request.session['user_name'])
   ride_list_open = RideInfo.objects.filter(isConfirmed = False, owner = user)
-  ride_list_confirmed = RideInfo.objects.filter(isConfirmed = True, owner = user)
+  #ride_list_open_owner = RideInfo.objects.filter(isConfirmed = True).filter(owner = user)
+  ride_list_open_sharer = user.sharer.all()
+  ride_list_open_sharer = ride_list_open_sharer.filter(isConfirmed = False)
+  #ride_list_confirmed = RideInfo.objects.filter(isConfirmed = True).filter(Q(owner = user) | Q(sharer = user))
+  ride_list_confirmed_owner = RideInfo.objects.filter(isConfirmed = True).filter(owner = user)
+  ride_list_confirmed_sharer = user.sharer.all()
+  ride_list_confirmed_sharer = ride_list_confirmed_sharer.filter(isConfirmed = True)
   ride_list_other_share = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, isSharable = True)
-  
+  ride_list_other_share = [ride for ride in ride_list_other_share if user not in user.sharer.all()]
   return render(request, "login/Passenger.html", locals())
 
+
+def joinRide(request):
+  if request.method == "POST" and request.POST:
+    join_form = JoinForm(data=request.POST)
+    joinNumber = join_form.cleaned_data["joinNumber"]
+    join_ride_id = request.session.get('join_other_ride_id', None)
+    join_ride = RideInfo.objects.get(id = join_ride_id)
+    join_ride.memberNumber = join_ride.memberNumber + joinNumber
+    joiner = UserInfo.objects.get(username = request.session['user_name'])
+    join_ride.sharer.add(joiner)
+    join_ride.save()
+    return render(request, "login/Passenger.html", locals())
+  join_form = JoinForm()
+  return render(request, "login/joinRide.html", locals())
+  
+  
 def editRide(request):
   if request.method == "POST" and request.POST:
     ride_form = RideForm(data=request.POST)
@@ -75,7 +104,7 @@ def editRide(request):
       endPoint = ride_form.cleaned_data["endPoint"]
       memberNumber = ride_form.cleaned_data["memberNumber"]
       specialText = ride_form.cleaned_data["specialText"]
-      isSharable = ride_form.cleaned_data["isSharable"]
+      #isSharable = ride_form.cleaned_data["isSharable"]
       edit_ride_id = request.session.get('edit_ride_id', None)
       ride_info = RideInfo.objects.get(id = edit_ride_id)
       #ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText) 
@@ -85,7 +114,7 @@ def editRide(request):
       ride_info.endPoint = endPoint
       ride_info.memberNumber = memberNumber
       ride_info.specialText = specialText
-      ride_info.isSharable = isSharable
+      #ride_info.isSharable = isSharable
       ride_info.save()
       return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
   ride_form = RideForm()
@@ -213,6 +242,8 @@ def login(request):
   #if request.session.get('is_login',None):
     #return redirect('/http://vcm-18235.vm.duke.edu:8000/userPage')        
   if request.GET:
+    if 'goToUserPage' in request.GET:
+      return redirect('/userPage') 
     return redirect('/register')    
     
   if request.method == "POST" and request.POST:

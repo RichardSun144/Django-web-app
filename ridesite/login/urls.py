@@ -16,4 +16,5 @@ urlpatterns = [
     path('editRide/', views.editRide, name='editRide'),
     path('pasSearchRide/', views.pasSearchRide, name='pasSearchRide'),
     path('driverSearchRide/', views.driverSearchRide, name='driverSearchRide'),
+    path('joinRide/', views.joinRide, name='joinRide'),
 ]

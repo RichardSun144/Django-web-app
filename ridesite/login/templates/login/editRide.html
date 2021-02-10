@@ -50,7 +50,30 @@
   <form method="POST" class="form-group">
 
     {% csrf_token %}
-  {{ride_form.as_p}}  
+    <div class="form-group">
+    {{ ride_form.date.label_tag }}
+    {{ ride_form.date}}
+    </div>
+    <div class="form-group">
+    {{ ride_form.time.label_tag }}
+    {{ ride_form.time}}
+    </div>
+    <div class="form-group">
+    {{ ride_form.startPoint.label_tag }}
+    {{ ride_form.startPoint}}
+    </div>
+    <div class="form-group">
+    {{ ride_form.endPoint.label_tag }}
+    {{ ride_form.endPoint}}
+    </div>
+    <div class="form-group">
+    {{ ride_form.memberNumber.label_tag }}
+    {{ ride_form.memberNumber}}
+    </div>
+    <div class="form-group">
+    {{ ride_form.specialText.label_tag }}
+    {{ ride_form.specialText}}
+    </div>
 
     <button type="submit" class="btn btn-primary">save ride</button>
   </form>  

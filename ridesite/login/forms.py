@@ -35,3 +35,5 @@ class SearchForm(forms.Form):
   endPoint = forms.CharField(label = "End Point", max_length=32, widget=forms.TextInput(attrs={'class': 'form-control'}))
   memberNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))
   
+class JoinForm(forms.Form):
+  joinNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))

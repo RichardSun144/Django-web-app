@@ -13,7 +13,7 @@
 {% if request.session.is_login %}
 
     <h1>Passenger</h1>
-    <h2>Your Open Ride</h2> 
+    <h2>Your Own Open Ride</h2> 
     
 <table class="table table-bordered">
 
@@ -28,7 +28,6 @@
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Sharable?</th>
-
       <th></th>
           </tr>
         </thead>
@@ -54,11 +53,48 @@
     {% endfor %}
         </tbody>
       </table>
+      
             
       <form method="GET"> 
       <button type="submit" name = "create_ride" class="btn btn-primary" value = {{ride.id}}>create a ride</button>
       </form>
    
+      
+      
+      <h2>Your Joined Open Ride</h2> 
+    
+<table class="table table-bordered">
+
+    <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
+        <thead>
+          <tr>
+            <th><div style="width:100%;text-align:center">#</th>
+      <th><div style="width:100%;text-align:center">date</th>
+      <th><div style="width:100%;text-align:center">time</th>
+      <th><div style="width:100%;text-align:center">start Point</th>
+      <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Special Text</th>
+      <th><div style="width:100%;text-align:center">Sharable?</th>
+          </tr>
+        </thead>
+        <tbody>
+  {% for ride in ride_list_open_sharer %}
+    <tr>
+      <td><strong>{{ride.id}}</strong></td>
+      <td>{{ride.date}}</td>
+      <td>{{ride.time}}</td>
+      <td>{{ride.startPoint}}</td>
+      <td>{{ride.endPoint}}</td>
+      <td>{{ride.memberNumber}}</td>
+      <td>{{ride.specialText}}</td>
+      <td>{{ride.isSharable}}</td>
+    </tr>
+    {% endfor %}
+        </tbody>
+      </table>
+      
+      
       
       
       
@@ -80,7 +116,7 @@
           </tr>
         </thead>
         <tbody>
-  {% for ride in ride_list_confirmed %}
+  {% for ride in ride_list_confirmed_owner %}
     <tr>
       <td><strong>{{ride.id}}</strong></td>
       <td>{{ride.date}}</td>
@@ -93,11 +129,24 @@
       <td>{{ride.isSharable}}</td>
     </tr>
     {% endfor %}
+    
+      {% for ride in ride_list_confirmed_sharer %}
+    <tr>
+      <td><strong>{{ride.id}}</strong></td>
+      <td>{{ride.date}}</td>
+      <td>{{ride.time}}</td>
+      <td>{{ride.startPoint}}</td>
+      <td>{{ride.endPoint}}</td>
+      <td>{{ride.memberNumber}}</td>
+      <td>{{ride.specialText}}</td>
+      <td>{{ride.driverWho}}</td>
+      <td>{{ride.isSharable}}</td>
+    </tr>
+    {% endfor %}
+    
         </tbody>
       </table>
-      
-      
-      
+            
       
       <h2>Available shared ride you can join</h2>
       <table class="table table-bordered">
@@ -112,6 +161,7 @@
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Owner Passenger Name</th>
+      <th></th>
           </tr>
         </thead>
         <tbody>
@@ -125,6 +175,11 @@
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
       <td>{{ride.owner.username}}</td>
+      <td>
+      <form method="GET"> 
+      <button type="submit" name = "join_other_ride" class="btn btn-primary" value = {{ride.id}}>Join</button>
+      </form>
+      </td>
     </tr>
     {% endfor %}
         </tbody>

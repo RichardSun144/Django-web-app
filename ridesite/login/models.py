@@ -21,7 +21,7 @@ class DriverInfo(models.Model):
         return self.vehicleType 
  
 class RideInfo(models.Model):
-  owner = models.ForeignKey(UserInfo, on_delete=models.CASCADE)
+  owner = models.ForeignKey(UserInfo, related_name="owner", on_delete=models.CASCADE)
   date = models.DateField(default = timezone.now)
   time = models.TimeField(default = timezone.now)
   startPoint = models.CharField(max_length=32)
@@ -31,6 +31,7 @@ class RideInfo(models.Model):
   isConfirmed = models.BooleanField(default=False)
   isSharable = models.BooleanField(default=False)
   driverWho = models.CharField(max_length=32)
+  sharer = models.ManyToManyField(UserInfo, related_name="sharer")
   def __str__(self):
         return self.startPoint + self.endPoint
 '''

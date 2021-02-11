@@ -5,6 +5,7 @@ from .models import UserInfo, DriverInfo, RideInfo
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
+from django.core.mail import send_mail
 # Create your views here.
 '''   
 def index(request):
@@ -17,16 +18,21 @@ def index(request):
 '''
 
 def Driver(request):
+  #owner = ride_to_confirm.owner
+    #owner_email = owner.email
+    #send_mail('test email', 'hello world', 'bennylee970715@gmail.com', ['rs546@duke.edu'])
     if request.GET:
       if 'driver_to_search_ride' in request.GET:
         return redirect("/driverSearchRide")
       if 'confirm_ride' in request.GET:
+
         ride_id = request.GET.get('confirm_ride')
         ride_to_confirm = RideInfo.objects.get(id = ride_id)
         ride_to_confirm.isConfirmed = True
         ride_to_confirm.driverWho = request.session['user_name']
         ride_to_confirm.save()
         all_open_ride = RideInfo.objects.filter(isConfirmed = False)
+        
         #return render(request, "login/Driver.html", locals())
       if 'complete_ride' in request.GET:
         ride_id = request.GET.get('complete_ride')
@@ -42,7 +48,7 @@ def Driver(request):
     driver_info = driver.driverinfo_set.all()
     driver_info_obj = DriverInfo.objects.get(owner = driver)
     dirver_info_capacity = driver_info_obj.containNumber
-    all_open_ride = RideInfo.objects.filter(isConfirmed = False, memberNumber__lte = dirver_info_capacity)
+    all_open_ride = RideInfo.objects.filter(isConfirmed = False, memberNumber__lte = dirver_info_capacity).exclude(owner = driver)
     all_confirmed_ride = RideInfo.objects.filter(isConfirmed = True, driverWho = request.session['user_name'])
     return render(request, "login/Driver.html", locals())
     
@@ -54,11 +60,11 @@ def Passenger(request):
       return redirect("/pasSearchRide")
     if 'join_other_ride' in request.GET:
       #joiner = UserInfo.objects.get(username = request.session['user_name'])
-      #ride_tobe_joined_id = request.GET.get('join_other_ride')
-      #request.session['join_other_ride_id'] = join_ride_id
+      ride_to_be_joined_id = request.GET.get('join_other_ride')
+      request.session['join_other_ride_id'] = ride_to_be_joined_id
       #ride_tobe_joined = RideInfo.objects.get(id = ride_tobe_joined_id)
       #ride_tobe_joined.sharer.add(joiner)
-      return render(request, "login/joinRide.html", locals())
+      return redirect("/joinRide")
     ride_id = request.GET.get('edit_ride')
     request.session['edit_ride_id'] = ride_id
     to_be_edit_ride = RideInfo.objects.get(id = ride_id)
@@ -75,24 +81,27 @@ def Passenger(request):
   ride_list_confirmed_sharer = user.sharer.all()
   ride_list_confirmed_sharer = ride_list_confirmed_sharer.filter(isConfirmed = True)
   ride_list_other_share = RideInfo.objects.exclude(owner = user).filter(isConfirmed = False, isSharable = True)
-  ride_list_other_share = [ride for ride in ride_list_other_share if user not in user.sharer.all()]
+  ride_list_other_share = [ride for ride in ride_list_other_share if user not in ride.sharer.all()]
   return render(request, "login/Passenger.html", locals())
 
 
 def joinRide(request):
   if request.method == "POST" and request.POST:
     join_form = JoinForm(data=request.POST)
-    joinNumber = join_form.cleaned_data["joinNumber"]
-    join_ride_id = request.session.get('join_other_ride_id', None)
-    join_ride = RideInfo.objects.get(id = join_ride_id)
-    join_ride.memberNumber = join_ride.memberNumber + joinNumber
-    joiner = UserInfo.objects.get(username = request.session['user_name'])
-    join_ride.sharer.add(joiner)
-    join_ride.save()
-    return render(request, "login/Passenger.html", locals())
+    if join_form.is_valid():
+      joinNumber = join_form.cleaned_data["joinNumber"]
+      join_ride_id = request.session.get('join_other_ride_id', None)
+      join_ride = RideInfo.objects.get(id = join_ride_id)
+      join_ride.memberNumber = join_ride.memberNumber + joinNumber
+      joiner = UserInfo.objects.get(username = request.session['user_name'])
+      join_ride.sharer.add(joiner)
+      join_ride.save()
+    else:
+      return render(request, "login/joinRide.html", locals())
+    return redirect("/Passenger")
   join_form = JoinForm()
   return render(request, "login/joinRide.html", locals())
-  
+
   
 def editRide(request):
   if request.method == "POST" and request.POST:

@@ -49,6 +49,8 @@
       <th><div style="width:100%;text-align:center">time</th>
       <th><div style="width:100%;text-align:center">start Point</th>
       <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Ride Owner</th>
+      <th><div style="width:100%;text-align:center">Sharer</th>
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Sharable?</th>
@@ -63,6 +65,12 @@
       <td><div style="width:100%;text-align:center">{{ride.time}}</td>
       <td><div style="width:100%;text-align:center">{{ride.startPoint}}</td>
       <td><div style="width:100%;text-align:center">{{ride.endPoint}}</td>
+      <td><div style="width:100%;text-align:center">{{ride.owner.username}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}},
+      {% endfor %}
+      </td>
       <td><div style="width:100%;text-align:center">{{ride.memberNumber}}</td>
       <td><div style="width:100%;text-align:center">{{ride.specialText}}</td>
       <td><div style="width:100%;text-align:center">{{ride.isSharable}}</td>

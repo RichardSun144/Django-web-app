@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
- 
+
+
+
 class RegisterForm(forms.Form):
     username = forms.CharField(max_length=32, widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(max_length=32, widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -30,10 +32,10 @@ class RideForm(forms.Form):
 class SearchForm(forms.Form):
   start_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
   end_date = forms.DateField(widget=forms.DateInput(attrs={'type':'date'}))
-  start_time = forms.TimeField(label = "Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
-  end_time = forms.TimeField(label = "Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
+  start_time = forms.TimeField(label = "Start Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
+  end_time = forms.TimeField(label = "End Time (eg. 14:30)", input_formats=['%H:%M'], widget=forms.TimeInput(format='%H:%M')) 
   endPoint = forms.CharField(label = "End Point", max_length=32, widget=forms.TextInput(attrs={'class': 'form-control'}))
   memberNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))
   
 class JoinForm(forms.Form):
-  joinNumber = forms.IntegerField(label = "Member Number", widget=forms.TextInput(attrs={'class': 'form-control'}))
+  joinNumber = forms.IntegerField(label = "Join Number", min_value = 1, error_messages={"min_value": "At least 1 passenger"}, widget=forms.TextInput(attrs={'class': 'form-control'}))

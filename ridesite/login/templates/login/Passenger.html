@@ -25,6 +25,7 @@
       <th><div style="width:100%;text-align:center">time</th>
       <th><div style="width:100%;text-align:center">start Point</th>
       <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Sharers</th>
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Sharable?</th>
@@ -39,6 +40,11 @@
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}}<br>
+      {% endfor %}
+      </td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
       <td>{{ride.isSharable}}</td>
@@ -73,6 +79,8 @@
       <th><div style="width:100%;text-align:center">time</th>
       <th><div style="width:100%;text-align:center">start Point</th>
       <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Owner name</th>
+      <th><div style="width:100%;text-align:center">Sharers</th>
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Sharable?</th>
@@ -86,6 +94,12 @@
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
+      <td>{{ride.owner.username}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}}<br>
+      {% endfor %}
+      </td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
       <td>{{ride.isSharable}}</td>
@@ -109,6 +123,8 @@
       <th><div style="width:100%;text-align:center">time</th>
       <th><div style="width:100%;text-align:center">start Point</th>
       <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Owner name</th>
+      <th><div style="width:100%;text-align:center">Sharers</th>
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Driver Name</th>
@@ -123,6 +139,12 @@
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
+      <td>{{ride.owner.username}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}}<br>
+      {% endfor %}
+      </td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
       <td>{{ride.driverWho}}</td>
@@ -137,6 +159,12 @@
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
+      <td>{{ride.owner.username}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}}<br>
+      {% endfor %}
+      </td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
       <td>{{ride.driverWho}}</td>
@@ -158,9 +186,11 @@
       <th><div style="width:100%;text-align:center">time</th>
       <th><div style="width:100%;text-align:center">start Point</th>
       <th><div style="width:100%;text-align:center">end Point</th>
+      <th><div style="width:100%;text-align:center">Owner name</th>
+      <th><div style="width:100%;text-align:center">Sharers</th>
       <th><div style="width:100%;text-align:center">Member Number</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
-      <th><div style="width:100%;text-align:center">Owner Passenger Name</th>
+
       <th></th>
           </tr>
         </thead>
@@ -172,9 +202,15 @@
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
+      <td>{{ride.owner.username}}</td>
+      <td><div style="width:100%;text-align:center">
+      {% for user in ride.sharer.all %}
+      {{user.username}}<br>
+      {% endfor %}
+      </td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
-      <td>{{ride.owner.username}}</td>
+ 
       <td>
       <form method="GET"> 
       <button type="submit" name = "join_other_ride" class="btn btn-primary" value = {{ride.id}}>Join</button>

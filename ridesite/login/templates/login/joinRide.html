@@ -1,30 +1,29 @@
-{% extends 'login/base.html' %}
+{% extends 'login/base.html' %} <!-- inheritance base -->
+
 {% load static %}
-{% block title %}login{% endblock %}
+{% block title %}Join others Ride{% endblock %}
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 {% endblock %}
 
 
 {% block content %}
+{% if request.session.is_login %}
   <div style="width:100%;text-align:center">
+<h1>DiDi Join Ride System</h1>
+<h2>Welcome to Join others ride!</h2>
 
-<h1>Welcome to Join Ride!</h1>
-<br/>
-<br/>
-<br/>
-</div>
   <div style="width:100%;text-align:center">
-<div class="col-md-4 col-md-offset-4">
-  {% if request.session.is_login %}
-  <h1>Please enter your join number<h1>
+  <div class="col-md-4 col-md-offset-4">
   <form method="POST" class="form-group">
-      {% csrf_token %}
-    {{join_form.as_p}}
-    <button type="submit" class="btn btn-primary" name="join_ride">Join</button>
-  </form> 
-</div>
-</div>
+
+    {% csrf_token %}
+   {{join_form.as_p}} 
+
+    <button type="submit" class="btn btn-primary">Join</button>
+  </form>  
+
+  </div>
       {% else %}
     <h1>You are not login, please do that</h1>
     {% endif %}

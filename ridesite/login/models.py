@@ -5,7 +5,7 @@ import django.utils.timezone as timezone
 class UserInfo(models.Model):
     username = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=32)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     isDriver = models.BooleanField(default=False)
     #pub_date = models.DateTimeField('date published')
     def __str__(self):

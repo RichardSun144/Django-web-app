@@ -18,12 +18,11 @@
     <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
         <thead>
           <tr>
-            <th><div style="width:100%;text-align:center">#</th>
-      <th><div style="width:100%;text-align:center">date</th>
-      <th><div style="width:100%;text-align:center">time</th>
-      <th><div style="width:100%;text-align:center">start Point</th>
-      <th><div style="width:100%;text-align:center">end Point</th>
-      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Date</th>
+      <th><div style="width:100%;text-align:center">Time</th>
+      <th><div style="width:100%;text-align:center">Start Point</th>
+      <th><div style="width:100%;text-align:center">End Point</th>
+      <th><div style="width:100%;text-align:center">Number of Passengers</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
 
 
@@ -33,26 +32,29 @@
         <tbody>
   {% for ride in pas_ride_search_result %}
     <tr>
-      <td><strong>{{ride.id}}</strong></td>
       <td>{{ride.date}}</td>
       <td>{{ride.time}}</td>
       <td>{{ride.startPoint}}</td>
       <td>{{ride.endPoint}}</td>
       <td>{{ride.memberNumber}}</td>
       <td>{{ride.specialText}}</td>
-      
+      <td>
+      <form method="GET"> 
+      <button type="submit" name = "pas_search_join" class="btn btn-primary" value = {{ride.id}}>Join</button>
+      </form>
+      </td>
     </tr>
     {% endfor %}
         </tbody>
       </table>    
       
       <form method="GET"> 
-      <button type="submit" name = "pas_search_back" class="btn btn-primary" value = {{ride.id}}>back</button>
+      <button type="submit" name = "pas_search_back" class="btn btn-primary" value = {{ride.id}}>Back</button>
       </form>
       
       
       
       {% else %}
-    <h1>You are not login, please do that</h1>
+      <h1><div style="width:100%;text-align:center">You are not login, please do that!</h1>
     {% endif %}
     {% endblock %}

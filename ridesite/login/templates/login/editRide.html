@@ -10,21 +10,21 @@
 {% block content %}
 {% if request.session.is_login %}
   <div style="width:100%;text-align:center">
-<h1>DiDi Start Ride Edit System</h1>
-<h2>Edit ride!</h2>
+<h1>Ride Edit System</h1>
+<h2>Edit Your Ride Now!</h2>
 </div>
 
-        <h3>Your original ride Information:</h3>
+        <h3>Your Original Ride Information:</h3>
   <table class="table table-bordered">
     <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
         <thead>
           <tr>
 
-      <th><div style="width:100%;text-align:center">date</th>
-      <th><div style="width:100%;text-align:center">time</th>
-      <th><div style="width:100%;text-align:center">start Point</th>
-      <th><div style="width:100%;text-align:center">end Point</th>
-      <th><div style="width:100%;text-align:center">Member Number</th>
+      <th><div style="width:100%;text-align:center">Date</th>
+      <th><div style="width:100%;text-align:center">Time</th>
+      <th><div style="width:100%;text-align:center">Start Point</th>
+      <th><div style="width:100%;text-align:center">End Point</th>
+      <th><div style="width:100%;text-align:center">Number of Passengers</th>
       <th><div style="width:100%;text-align:center">Special Text</th>
       <th><div style="width:100%;text-align:center">Sharable?</th>
 
@@ -44,7 +44,7 @@
         </tbody>
       </table>
         <div style="width:100%;text-align:center">
-      <h3>Your upadated ride Information:</h3>
+      <h3>Your Updated Ride Information:</h3>
       </div>
     <div class="col-md-4 col-md-offset-4">
   <form method="POST" class="form-group">
@@ -74,12 +74,12 @@
     {{ ride_form.specialText.label_tag }}
     {{ ride_form.specialText}}
     </div>
-
-    <button type="submit" class="btn btn-primary">save ride</button>
+<div style="width:100%;text-align:center">
+    <button type="submit" class="btn btn-primary">Save Ride</button>
   </form>  
-
+</div>
   </div>
       {% else %}
-    <h1>You are not login, please do that</h1>
+    <h1><div style="width:100%;text-align:center">You are not login, please do that!</h1>
     {% endif %}
 {% endblock %}

@@ -18,21 +18,23 @@ def index(request):
 '''
 
 def Driver(request):
-  #owner = ride_to_confirm.owner
-    #owner_email = owner.email
-    #send_mail('test email', 'hello world', 'bennylee970715@gmail.com', ['rs546@duke.edu'])
     if request.GET:
       if 'driver_to_search_ride' in request.GET:
         return redirect("/driverSearchRide")
       if 'confirm_ride' in request.GET:
-
         ride_id = request.GET.get('confirm_ride')
         ride_to_confirm = RideInfo.objects.get(id = ride_id)
         ride_to_confirm.isConfirmed = True
         ride_to_confirm.driverWho = request.session['user_name']
         ride_to_confirm.save()
         all_open_ride = RideInfo.objects.filter(isConfirmed = False)
-        
+        owner = ride_to_confirm.owner
+        owner_email = owner.email
+        send_mail('Ride Confirm', 'Your ride has been confirmed!', 'bennylee970715@gmail.com', [owner_email])
+        sharer_in_ride = ride_to_confirm.sharer.all()
+        for sharer in sharer_in_ride:
+          sharer_email = sharer.email
+          send_mail('Ride Confirm', 'Your ride has been confirmed!', 'bennylee970715@gmail.com', [sharer_email])
         #return render(request, "login/Driver.html", locals())
       if 'complete_ride' in request.GET:
         ride_id = request.GET.get('complete_ride')
@@ -40,7 +42,7 @@ def Driver(request):
         ride_to_complete.delete()
         #return render(request, "login/Driver.html", locals())
     if not request.session.get('is_driver', None):
-      return redirect("/http://vcm-18235.vm.duke.edu:8000/driverRegister")
+      return redirect("/driverRegister")
     elif request.GET and 'edit driver profile' in request.GET:
       return redirect("/driverRegister")
     driver_name = request.session['user_name']
@@ -125,7 +127,7 @@ def editRide(request):
       ride_info.specialText = specialText
       #ride_info.isSharable = isSharable
       ride_info.save()
-      return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
+      return redirect('/Passenger')
   ride_form = RideForm()
   edit_ride_id = request.session.get('edit_ride_id', None)
   to_be_edit_ride = RideInfo.objects.get(id = edit_ride_id)
@@ -146,6 +148,10 @@ def pasSearchRide(request):
   if request.GET:
     if 'pas_search_back' in request.GET:
       return render(request, "login/Passenger.html")
+    if 'pas_search_join' in request.GET:
+      ride_to_be_joined_id = request.GET.get('pas_search_join')
+      request.session['join_other_ride_id'] = ride_to_be_joined_id
+      return redirect("/joinRide")
   if request.method == "POST" and request.POST:
     PasSearchRide_form = SearchForm(data=request.POST)
     if PasSearchRide_form.is_valid():
@@ -168,6 +174,21 @@ def driverSearchRide(request):
   if request.GET:
     if 'driver_search_back' in request.GET:
       return render(request, "login/Driver.html")
+    if 'confirm_search_ride' in request.GET:
+      ride_id = request.GET.get('confirm_search_ride')
+      ride_to_confirm = RideInfo.objects.get(id = ride_id)
+      ride_to_confirm.isConfirmed = True
+      ride_to_confirm.driverWho = request.session['user_name']
+      ride_to_confirm.save()
+      all_open_ride = RideInfo.objects.filter(isConfirmed = False)
+      owner = ride_to_confirm.owner
+      owner_email = owner.email
+      send_mail('Ride Confirm', 'Your ride has been confirmed!', 'bennylee970715@gmail.com', [owner_email])
+      sharer_in_ride = ride_to_confirm.sharer.all()
+      for sharer in sharer_in_ride:
+        sharer_email = sharer.email
+        send_mail('Ride Confirm', 'Your ride has been confirmed!', 'bennylee970715@gmail.com', [sharer_email])
+      return redirect("/Driver")
   if request.method == "POST" and request.POST:
     DriverSearchRide_form = SearchForm(data=request.POST)
     if DriverSearchRide_form.is_valid():
@@ -207,8 +228,7 @@ def driverRegister(request):
       except:
         driver_info = DriverInfo(owner = user, vehicleType=vehicleType, licenseNumber=licenseNumber, containNumber=containNumber, specialText=specialText)   
       driver_info.save()
-      return redirect('http://vcm-18235.vm.duke.edu:8000/Driver')
-      
+      return redirect('/Driver')   
   driver_form = DriverForm() 
   driver_name = request.session['user_name']
   driver = UserInfo.objects.get(username = driver_name)
@@ -219,12 +239,12 @@ def driverRegister(request):
 def userPage(request):
   if request.GET:
     if 'Passenger' in request.GET:
-      return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
+      return redirect('/Passenger')
     else:
       if request.session.get('is_driver', None):
-        return redirect('http://vcm-18235.vm.duke.edu:8000/Driver') 
+        return redirect('/Driver') 
       else:
-        return redirect('http://vcm-18235.vm.duke.edu:8000/driverRegister') 
+        return redirect('/driverRegister') 
   return render(request, "login/userPage.html")
     
 
@@ -241,7 +261,7 @@ def register(request):
         return render(request, "login/register.html", locals())
       except: 
         UserInfo.objects.create(username=username,password=password,email=email)   
-        return redirect('http://vcm-18235.vm.duke.edu:8000/login')
+        return redirect('/login')
   register_form = RegisterForm()
   return render(request, "login/register.html", locals()) 
 
@@ -269,7 +289,7 @@ def login(request):
           request.session['user_name'] = user.username
           request.session['user_email'] = user.email
           request.session['is_driver'] = user.isDriver
-          return redirect('http://vcm-18235.vm.duke.edu:8000/userPage')
+          return redirect('/userPage')
         else:
           message = "wrong password"
       except:
@@ -311,7 +331,7 @@ def startRide(request):
       '''
       ride_info= RideInfo(owner = user, date=date, time=time, startPoint=startPoint, endPoint=endPoint, memberNumber=memberNumber, specialText = specialText, isSharable = isSharable) 
       ride_info.save()
-      return redirect('http://vcm-18235.vm.duke.edu:8000/Passenger')
+      return redirect('/Passenger')
   else:
     ride_form = RideForm()
   return render(request, "login/startRide.html", locals()) 
@@ -319,7 +339,7 @@ def startRide(request):
   
 def logout(request):
   if not request.session.get('is_login', None):
-    return redirect("/http://vcm-18235.vm.duke.edu:8000/userPage")
+    return redirect("/userPage")
   request.session.flush()
   return redirect('/login')
   

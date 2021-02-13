@@ -10,13 +10,13 @@
 {% block content %}
 {% if request.session.is_login %}
   <div style="width:100%;text-align:center">
-  <h1>DiDi driver System</h1>
+  <h1>Driver System</h1>
   {% if driver_info_Num == 0 %}
-<h2>Welcome to be a new driver!</h2>
-  <h2> Add your Driver information</h2>
+<h2>Welcome to Become A New Driver!</h2>
+  <h2> Add your Driver Information</h2>
   {% else %}
-    <h2> Edit your Driver information</h2>
-    <h2> <div style="width:100%;text-align:left">Your original Driver information</h2>
+    <h2> Edit Your Driver Information</h2>
+    <h2> <div style="width:100%;text-align:left">Your original Driver Information:</h2>
     
     <table class="table table-bordered">
     <link rel="stylesheet" href="{% static 'css/rideTable.css' %}">
@@ -41,7 +41,7 @@
     </tr>
         </tbody>
       </table>  
-        <h2> Your updated Driver information</h2>
+        <h2> Your Updated Driver Information</h2>
   {% endif %} 
   
   <div style="width:100%;text-align:center">
@@ -52,10 +52,10 @@
     {% csrf_token %}
    {{driver_form.as_p}} 
 
-    <button type="submit" class="btn btn-primary">Confirm my Driver Info</button>
+    <button type="submit" class="btn btn-primary">Confirm Driver Information</button>
   </form>  
   </div>
       {% else %}
-    <h1>You are not login, please do that</h1>
+   <h1><div style="width:100%;text-align:center">You are not login, please do that!</h1>
     {% endif %}
 {% endblock %}
